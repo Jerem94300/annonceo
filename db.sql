@@ -1,0 +1,83 @@
+CREATE DATABASE IF NOT EXISTS annonceo;
+USE annonceo;
+
+
+CREATE TABLE `member` (
+  id_member INT(11) NOT NULL AUTO_INCREMENT,
+  pseudo VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  lastName VARCHAR(255) NOT NULL,
+  firstName VARCHAR(255) NOT NULL,
+  phone_number VARCHAR(10) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  civilite ENUM('M','Mme','Mlle') NOT NULL,
+  status INT(1) NOT NULL,
+  date DATETIME NOT NULL,
+  PRIMARY KEY (id_member)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `category` (
+  id_category INT(11) NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  keywords VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id_category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `photo` (
+  id_photo INT(11) NOT NULL AUTO_INCREMENT,
+  title_photo1 VARCHAR(255) NOT NULL,
+  title_photo2 VARCHAR(255) NOT NULL,
+  title_photo3 VARCHAR(255) NOT NULL,
+  title_photo4 VARCHAR(255) NOT NULL,
+  title_photo5 VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id_photo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `annonce` (
+  id_annonce INT(11) NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  description_short VARCHAR(255) NOT NULL,
+  description_long LONGTEXT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  picture VARCHAR(250) DEFAULT NULL,
+  country VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  zipcode INT(5) UNSIGNED NOT NULL, -- Suppression de ZEROFILL
+  member_id INT(11) NOT NULL, 
+  photo_id INT(11) DEFAULT NULL, 
+  category_id INT(11) NOT NULL, 
+  date DATETIME NOT NULL,
+  PRIMARY KEY (id_annonce)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `comment` (
+  id_comment INT(11) NOT NULL AUTO_INCREMENT,
+  comment LONGTEXT NOT NULL,
+  date DATETIME NOT NULL,
+  member_id INT(11) NOT NULL, 
+  annonce_id INT(11) NOT NULL, 
+  PRIMARY KEY (id_comment)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `note` (
+  id_note INT(11) NOT NULL AUTO_INCREMENT,
+  note INT(3) NOT NULL,
+  avis LONGTEXT NOT NULL,
+  date DATETIME NOT NULL,
+  member_id INT(11) NOT NULL,
+  annonce_id INT(11) NOT NULL, 
+  PRIMARY KEY (id_note)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 4. Ajout des clés étrangères avec ALTER TABLE
+ALTER TABLE `annonce` ADD CONSTRAINT FK_MemberAnnonce FOREIGN KEY (member_id) REFERENCES member(id_member) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE `annonce` ADD CONSTRAINT FK_PhotoAnnonce FOREIGN KEY (photo_id) REFERENCES photo(id_photo) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE `annonce` ADD CONSTRAINT FK_CategoryAnnonce FOREIGN KEY (category_id) REFERENCES category(id_category) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE `comment` ADD CONSTRAINT FK_MemberComment FOREIGN KEY (member_id) REFERENCES member(id_member) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE `comment` ADD CONSTRAINT FK_AnnonceComment FOREIGN KEY (annonce_id) REFERENCES annonce(id_annonce) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE `note` ADD CONSTRAINT FK_MemberNote FOREIGN KEY (member_id) REFERENCES member(id_member) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE `note` ADD CONSTRAINT FK_AnnonceNote FOREIGN KEY (annonce_id) REFERENCES annonce(id_annonce) ON UPDATE RESTRICT ON DELETE RESTRICT;
