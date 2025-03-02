@@ -90,7 +90,7 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="connexion.php?action=logout">Mes annonces</a>
+                <a class="nav-link" href="myannonce.php?">Mes annonces</a>
               </li>
 
 
